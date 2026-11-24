@@ -11,3 +11,4 @@ dist/
 .coverage
 htmlcov/
 staticfiles/
+dump.rdb

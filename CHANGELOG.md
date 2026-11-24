@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.1 (2026-11-25)
+
+- `compose.prod.yaml` with settings for a 2 GB server.
+- `scripts/make_env.py --host NAME` writes production settings for that host name.
+- The version is defined once, in the package; the OpenAPI schema and `pyproject.toml`
+  read it from there.
+
 ## 0.1.0 (2026-11-24)
 
 First version.

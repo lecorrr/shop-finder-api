@@ -3,6 +3,8 @@ from pathlib import Path
 
 import environ
 
+from shopfinder import __version__
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env()
@@ -119,7 +121,7 @@ SIMPLE_JWT = {
 SPECTACULAR_SETTINGS = {
     "TITLE": "Shop finder API",
     "DESCRIPTION": "Which nearby shops have an item in stock, and at what price.",
-    "VERSION": "0.1.0",
+    "VERSION": __version__,
     "SERVE_INCLUDE_SCHEMA": False,
 }
 

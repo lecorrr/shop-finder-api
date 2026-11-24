@@ -108,6 +108,21 @@ A feed has the columns `barcode`, `price` and `quantity`. CSV may use `,` or `;`
 decimal comma, as spreadsheet exports in Ukraine do; JSON is a list of rows or
 `{"items": [...]}`. Bad rows are reported by line number and skipped.
 
+## Running on a server
+
+`compose.prod.yaml` holds the settings for a small server (2 GB of memory), and
+`make_env.py --host` writes the production values: debug off, the public host name, secure
+cookies, one gunicorn process with threads.
+
+```bash
+python3 scripts/make_env.py --host shop.example.com
+docker compose -f compose.yaml -f compose.prod.yaml up -d --build
+```
+
+The API still listens on 127.0.0.1:8020 only, so it needs an HTTPS proxy on the same
+machine. [portfolio-server](https://github.com/lecorrr/portfolio-server) sets up an AWS EC2
+instance this way, with Caddy in front of this project and its sibling.
+
 ## Developing without rebuilding the image
 
 Run the databases in Compose and Django from a virtual environment (Python 3.12 or newer):

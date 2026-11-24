@@ -1,0 +1,15 @@
+# Settings for one small server (2 GB of memory), applied on top of compose.yaml:
+#
+#   python3 scripts/make_env.py --host shop.example.com
+#   docker compose -f compose.yaml -f compose.prod.yaml up -d --build
+#
+# The API still listens on 127.0.0.1:8020 only; an HTTPS proxy on the same server forwards
+# to it.
+services:
+  mongo:
+    # By default MongoDB keeps half of the memory above 1 GB as cache; a quarter GB is
+    # plenty for this data and leaves room for everything else.
+    command: ["mongod", "--wiredTigerCacheSizeGB", "0.25"]
+
+  worker:
+    command: ["celery", "-A", "shopfinder", "worker", "--loglevel=INFO", "--concurrency=1"]
