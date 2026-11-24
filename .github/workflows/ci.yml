@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_DB: shopfinder
+          POSTGRES_USER: shopfinder
+          POSTGRES_PASSWORD: shopfinder
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U shopfinder -d shopfinder"
+          --health-interval 5s --health-timeout 3s --health-retries 20
+      mongo:
+        image: mongo:8.0
+        ports: ["27017:27017"]
+        options: >-
+          --health-cmd "mongosh --quiet --eval 'db.runCommand({ping:1}).ok'"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+      redis:
+        image: redis:8-alpine
+        ports: ["6379:6379"]
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s --health-timeout 3s --health-retries 20
+    env:
+      DJANGO_SECRET_KEY: ci-only-not-a-secret
+      DATABASE_URL: postgres://shopfinder:shopfinder@localhost:5432/shopfinder
+      MONGO_URL: mongodb://localhost:27017
+      REDIS_URL: redis://localhost:6379/0
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+          cache: pip
+          cache-dependency-path: requirements-dev.lock
+      - name: Install
+        run: pip install -r requirements-dev.lock
+      - name: Format
+        run: ruff format --check .
+      - name: Lint
+        run: ruff check .
+      - name: Migrations are up to date
+        run: python manage.py makemigrations --check --dry-run
+      - name: OpenAPI schema builds without warnings
+        run: python manage.py spectacular --fail-on-warn --file /dev/null
+      - name: Tests
+        run: pytest
+
+  image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Build the Docker image
+        run: docker build --tag shop-finder-api:ci .

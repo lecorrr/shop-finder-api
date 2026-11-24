@@ -1,0 +1,55 @@
+[project]
+name = "shop-finder-api"
+version = "0.1.0"
+description = "Find which nearby shops have an item in stock: Django REST API on PostgreSQL and MongoDB."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "Django>=6.1,<6.2",
+    "djangorestframework>=3.18,<3.19",
+    "djangorestframework-simplejwt>=5.5,<6",
+    "django-filter>=26.2",
+    "drf-spectacular>=0.30,<0.31",
+    "django-environ>=0.14,<0.15",
+    "psycopg[binary]>=3.3,<3.4",
+    "pymongo>=4.20,<5",
+    "celery[redis]>=5.7,<5.8",
+    "redis>=8.2,<9",
+    "httpx>=0.28,<0.29",
+    "whitenoise>=6.12,<7",
+    "gunicorn>=27,<28",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=9,<10",
+    "pytest-django>=4.14,<5",
+    "factory-boy>=3.3,<4",
+    "ruff>=0.17,<0.18",
+]
+
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["shopfinder*", "accounts*", "shops*", "catalog*", "offers*", "imports*", "stats*", "core*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = ["*/migrations/*"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "DJ", "SIM", "RUF"]
+# Django and DRF are configured through mutable class attributes (fields, permission_classes).
+ignore = ["RUF012"]
+
+[tool.ruff.lint.per-file-ignores]
+# Some tests use Ukrainian text on purpose (Cyrillic letters, the U+2019 apostrophe).
+"tests/*" = ["RUF001"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "shopfinder.test_settings"
+testpaths = ["tests"]
+addopts = "-ra"
