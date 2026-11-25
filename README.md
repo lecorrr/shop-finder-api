@@ -8,6 +8,27 @@ Built with Django and Django REST Framework on two databases: PostgreSQL for use
 and offers, MongoDB for the product catalogue and search statistics. Feed imports run in a
 Celery worker with Redis as the broker. Everything runs locally with Docker Compose.
 
+## Live demo
+
+It runs on one small AWS EC2 instance in Frankfurt, set up by
+[portfolio-server](https://github.com/lecorrr/portfolio-server), with synthetic demo data
+around central Kyiv.
+
+- API docs (Swagger UI): https://shop.63-182-82-117.sslip.io/api/v1/docs/
+- Health check: https://shop.63-182-82-117.sslip.io/api/v1/health/
+
+Searching needs no account:
+
+```bash
+curl "https://shop.63-182-82-117.sslip.io/api/v1/search/?q=milk&lat=50.4501&lon=30.5234&radius_km=2"
+```
+
+For the shop owner's side, register (`POST /api/v1/auth/register/`), get a token
+(`POST /api/v1/auth/token/`, or Authorize in Swagger UI), create a shop
+(`POST /api/v1/shops/`) and import `examples/prices.csv` into it as shown in
+[Try the API](#try-the-api), with `http://127.0.0.1:8020` replaced by
+`https://shop.63-182-82-117.sslip.io`.
+
 ## Stack
 
 | Part | Used for |

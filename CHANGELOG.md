@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.2 (2026-11-25)
+
+- README: the live demo on AWS, with a search anyone can run without an account.
+
 ## 0.1.1 (2026-11-25)
 
 - `compose.prod.yaml` with settings for a 2 GB server.
